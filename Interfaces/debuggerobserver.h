@@ -72,6 +72,9 @@ enum DebuggerUpdateReason {
     DBG_UR_WATCHMEMORY,             // Watch memory is available
     DBG_UR_LISTTHRAEDS,             // Threads list is available
     DBG_UR_LISTCHILDREN,            // Children list for a variable object is available
+    
+    DBUG_UR_CHANGEVARTYPE,          // variable display format was changed
+    
     DBG_UR_VARIABLEOBJ,             // Variable object was created
     DBG_UR_VARIABLEOBJCREATEERR,    // Variable object create error
     DBG_UR_EVALVARIABLEOBJ,         // Variable object has be evaluated

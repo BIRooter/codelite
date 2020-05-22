@@ -1205,7 +1205,7 @@ void DbgGdb::SetInternalMainBpID(int bpId) { m_internalBpId = bpId; }
 
 bool DbgGdb::Restart() { return WriteCommand(wxT("-exec-run "), new DbgCmdHandlerExecRun(m_observer, this)); }
 
-bool DbgGdb::SetVariableObbjectDisplayFormat(const wxString& name, DisplayFormat displayFormat)
+bool DbgGdb::SetVariableObjectDisplayFormat(const wxString& name, DisplayFormat displayFormat)
 {
     wxString df, cmd;
     switch(displayFormat) {
@@ -1228,7 +1228,7 @@ bool DbgGdb::SetVariableObbjectDisplayFormat(const wxString& name, DisplayFormat
     }
 
     cmd << wxT("-var-set-format ") << WrapSpaces(name) << wxT(" ") << df;
-    return WriteCommand(cmd, NULL);
+    return WriteCommand(cmd, new DbgCmdChangeVarType(m_observer, name, DBUG_UR_CHANGEVARTYPE));
 }
 
 bool DbgGdb::UpdateVariableObject(const wxString& name, int userReason)

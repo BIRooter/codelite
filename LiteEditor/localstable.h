@@ -60,6 +60,14 @@ protected:
     void OnStackSelected(clCommandEvent& event);
     void OnSortItems(wxCommandEvent& event);
     void SetSortingFunction();
+    
+    void SetValueType(wxCommandEvent& event, DisplayFormat format);
+    void OnSetValueTypeDefault(wxCommandEvent& event);
+    void OnSetValueTypeDecimal(wxCommandEvent& event);
+    void OnSetValueTypeHex(wxCommandEvent& event);
+    void OnSetValueTypeOctal(wxCommandEvent& event);
+    void OnSetValueTypeBinary(wxCommandEvent& event);
+
 
 public:
     LocalsTable(wxWindow* parent);

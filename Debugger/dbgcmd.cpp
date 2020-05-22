@@ -1320,6 +1320,44 @@ bool DbgCmdEvalVarObj::ProcessOutput(const wxString& line)
     return false;
 }
 
+
+bool DbgCmdChangeVarType::ProcessOutput(const wxString& line)
+{
+    bool bValidFlag = false;
+    DebuggerEventData e;
+    std::string cbuffer = line.mb_str(wxConvUTF8).data();
+    GdbChildrenInfo info;
+    
+    do
+    {
+        gdbParseListChildren(cbuffer, info);
+
+        if (info.children.empty())
+            break;
+
+        // change value of children
+        for (size_t i = 0; i < info.children.size(); i++)
+            e.m_varObjChildren.push_back(FromParserOutput(info.children.at(i)));
+
+        if(info.children.size() > 0) {
+            e.m_updateReason = DBUG_UR_CHANGEVARTYPE;
+            e.m_expression = m_variable;
+            e.m_userReason = m_userReason;
+            m_observer->DebuggerUpdate(e);
+
+            clCommandEvent evtList(wxEVT_DEBUGGER_LIST_CHILDREN);
+            evtList.SetClientObject(new DebuggerEventData(e));
+            EventNotifier::Get()->AddPendingEvent(evtList);
+        }
+        
+        bValidFlag = true;
+    } while (0 == 1);
+    
+    return bValidFlag;
+}
+
+
+
 bool DbgFindMainBreakpointIdHandler::ProcessOutput(const wxString& line)
 {
     // so the breakpoint ID will come in form of

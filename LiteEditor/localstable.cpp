@@ -41,6 +41,13 @@
 
 BEGIN_EVENT_TABLE(LocalsTable, DebuggerTreeListCtrlBase)
 EVT_MENU(XRCID("Change_Value"), LocalsTable::OnEditValue)
+
+EVT_MENU(XRCID("Default"), LocalsTable::OnSetValueTypeDefault)
+EVT_MENU(XRCID("Decimal"), LocalsTable::OnSetValueTypeDecimal)
+EVT_MENU(XRCID("Hex"), LocalsTable::OnSetValueTypeHex)
+EVT_MENU(XRCID("Octal"), LocalsTable::OnSetValueTypeOctal)
+EVT_MENU(XRCID("Binary"), LocalsTable::OnSetValueTypeBinary)
+
 EVT_UPDATE_UI(XRCID("Change_Value"), LocalsTable::OnEditValueUI)
 END_EVENT_TABLE()
 
@@ -367,10 +374,35 @@ void LocalsTable::OnRefresh(wxCommandEvent& event)
 
 void LocalsTable::OnRefreshUI(wxUpdateUIEvent& event) { event.Enable(DoGetDebugger() != NULL); }
 
+namespace
+{
+#include <vector>
+
+using namespace std;
+
+wxMenu* CreateFormatMenu()
+{
+    wxMenu* menu = new wxMenu();
+    vector<wxString> FormatsVector =  {{"Default"},  {"Decimal"}, {"Hex"}, 
+                                       {"Octal"}, {"Binary"}};
+    std::for_each(FormatsVector.begin(), FormatsVector.end(),
+                  [&](const wxString& formatName) 
+                  {
+                      menu->Append(wxXmlResource::GetXRCID(formatName), 
+                                   formatName);
+                  });
+                  
+    return menu;
+}
+}
+
 void LocalsTable::OnItemRightClick(wxTreeEvent& event)
 {
     wxMenu menu;
+    wxMenu* pSubMenu = CreateFormatMenu();
+    
     menu.Append(XRCID("Change_Value"), _("Change value..."), wxT(""), wxITEM_NORMAL);
+    menu.AppendSubMenu(pSubMenu, _("Display as"));
     PopupMenu(&menu);
 }
 
@@ -474,4 +506,46 @@ void LocalsTable::SetSortingFunction()
         }
     };
     m_listTable->SetSortFunction(func);
+}
+
+void LocalsTable::SetValueType(wxCommandEvent& event, DisplayFormat format)
+{
+    do
+    {
+        wxTreeItemId selectedItem = m_listTable->GetSelection();
+        if (selectedItem.IsOk() == false)
+            break;
+            
+        DbgTreeItemData* data = (DbgTreeItemData*)m_listTable->GetItemData(selectedItem);
+        IDebugger* debugger = DoGetDebugger();
+        if (debugger == nullptr)
+            break;
+            
+        debugger->SetVariableObjectDisplayFormat(data->_gdbId, format);
+    } while (0 == 1);
+}
+
+void LocalsTable::OnSetValueTypeDefault(wxCommandEvent& event)
+{
+    SetValueType(event, DBG_DF_NATURAL);
+}
+
+void LocalsTable::OnSetValueTypeDecimal(wxCommandEvent& event)
+{
+    SetValueType(event, DBG_DF_DECIMAL);
+}
+
+void LocalsTable::OnSetValueTypeHex(wxCommandEvent& event)
+{
+    SetValueType(event, DBG_DF_HEXADECIMAL);
+}
+
+void LocalsTable::OnSetValueTypeOctal(wxCommandEvent& event)
+{
+    SetValueType(event, DBG_DF_OCTAL);
+}
+
+void LocalsTable::OnSetValueTypeBinary(wxCommandEvent& event)
+{
+    SetValueType(event, DBG_DF_BINARY);
 }

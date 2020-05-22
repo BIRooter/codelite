@@ -432,7 +432,7 @@ JSONItem& JSONItem::addProperty(const wxString& name, const std::string& value)
 
 JSONItem& JSONItem::addProperty(const wxString& name, const wxChar* value)
 {
-    append(JSONItem(name, wxString(value), cJSON_String));
+    append(JSONItem(name, wxString(value)));
     return *this;
 }
 
@@ -452,7 +452,7 @@ JSONItem& JSONItem::addProperty(const wxString& name, const wxArrayString& arr)
     return *this;
 }
 
-void JSONItem::arrayAppend(const wxString& value) { arrayAppend(JSONItem(wxT(""), value, cJSON_String)); }
+void JSONItem::arrayAppend(const wxString& value) { arrayAppend(JSONItem(wxT(""), value)); }
 
 wxArrayString JSONItem::toArrayString(const wxArrayString& defaultValue) const
 {

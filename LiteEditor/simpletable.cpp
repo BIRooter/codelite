@@ -372,7 +372,7 @@ void WatchesTable::OnCreateVariableObject(const DebuggerEventData& event)
                 // set the type
                 m_listTable->SetItemText(item, event.m_variableObject.typeName, 2);
                 if (dbgr->GetDebuggerInformation().defaultHexDisplay == true)
-                  dbgr->SetVariableObbjectDisplayFormat(DoGetGdbId(item), DBG_DF_HEXADECIMAL);
+                  dbgr->SetVariableObjectDisplayFormat(DoGetGdbId(item), DBG_DF_HEXADECIMAL);
                 // refresh this item only
                 if(dbgr) DoRefreshItem(dbgr, item, true);
 
@@ -520,7 +520,7 @@ void WatchesTable::OnMenuDisplayFormat(wxCommandEvent& event)
         if (!item.IsOk()) return;
         wxString gdbId = DoGetGdbId(item);
         if(gdbId.IsEmpty() == false) {
-            dbgr->SetVariableObbjectDisplayFormat(gdbId, df);
+            dbgr->SetVariableObjectDisplayFormat(gdbId, df);
             dbgr->UpdateVariableObject(gdbId, m_DBG_USERR);
             DoRefreshItem(dbgr, item, true);
         }       

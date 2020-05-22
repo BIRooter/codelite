@@ -478,6 +478,25 @@ public:
     virtual bool ProcessOutput(const wxString& line);
 };
 
+class DbgCmdChangeVarType : public DbgCmdHandler
+{
+    wxString m_variable;
+    int m_userReason;
+
+public:
+    DbgCmdChangeVarType(IDebuggerObserver* observer, const wxString& variable, 
+                        int userReason)
+        : DbgCmdHandler(observer)
+        , m_variable(variable)
+        , m_userReason(userReason)
+    {
+    }
+
+    virtual ~DbgCmdChangeVarType() {}
+
+    virtual bool ProcessOutput(const wxString& line);
+};
+
 class DbgFindMainBreakpointIdHandler : public DbgCmdHandler
 {
     DbgGdb* m_debugger;
